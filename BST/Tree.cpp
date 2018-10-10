@@ -9,16 +9,26 @@ Tree::Tree () {
 	root = NULL;
 }
 
+/**
+* Public Methods
+**/
+
 void Tree::insert (int x) {
-	if(root == NULL) {
-		root = new Node(x);
-	} else {
-		insertInTree(root, x);
-	}
+	insertInTreeIterative(root, x);
 }
 
-void Tree::insertInTree(Node* tree, int x) {
-	if(x < tree->data) {
+void Tree::inorder () {
+	inorderTreeIterative(root);
+	cout << "\n";
+}
+
+/**
+* Private Methods
+**/
+
+void Tree::insertInTree(Node *&tree, int x) {
+	if(tree == NULL) tree = new Node(x);
+	else if(x < tree->data) {
 		if(tree->left == NULL) tree->left = new Node(x);
 		else insertInTree(tree->left, x);
 	} else {
@@ -27,15 +37,10 @@ void Tree::insertInTree(Node* tree, int x) {
 	}
 }
 
-void Tree::inorder () {
-	inorderTraversal(root);
-	cout << "\n";
-}
-
-void Tree::inorderTraversal(Node* tree) {
+void Tree::inorderTree(Node *&tree) {
 	if(tree != NULL) {
-		inorderTraversal(tree->left);
+		inorderTree(tree->left);
 		cout << tree->data << "\t";
-		inorderTraversal(tree->right);
+		inorderTree(tree->right);
 	}
 }
