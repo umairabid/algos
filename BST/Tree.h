@@ -1,11 +1,17 @@
 class Tree {
 	public:
-		Node* root;
+		Node *root;
 		Tree();
 		void insert(int x);
 		void inorder();
-	
+
 	private:
-		void inorderTraversal(Node* tree);
-		void insertInTree(Node* root, int x);
+		// recursive
+		void inorderTree(Node *&tree);
+		void insertInTree(Node *&root, int x);
+
+		//iterative
+		void inorderTreeIterative(Node *&root);
+		void insertInTreeIterative(Node *&root, int x);
+		
 };
