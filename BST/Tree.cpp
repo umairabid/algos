@@ -22,6 +22,10 @@ void Tree::inorder () {
 	cout << "\n";
 }
 
+Node* Tree::search (int x) {
+	return searchInTreeIterative(root, x);
+}
+
 /**
 * Private Methods
 **/
@@ -42,5 +46,14 @@ void Tree::inorderTree(Node *&tree) {
 		inorderTree(tree->left);
 		cout << tree->data << "\t";
 		inorderTree(tree->right);
+	}
+}
+
+Node* Tree::searchInTree(Node *&tree, int x) {
+	if(tree == NULL || tree->data == x) {
+		return tree;
+	} else {
+		if(x < tree->data) return searchInTree(tree->left, x);
+		else return searchInTree(tree->right, x);
 	}
 }

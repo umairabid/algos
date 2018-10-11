@@ -26,6 +26,24 @@ void Tree::insertInTreeIterative(Node *&root, int x) {
 }
 
 void Tree::inorderTreeIterative(Node *&root) {
-	stack <int> s; 
-	cout << "Inorder traversal" << '\n';
+	stack <Node *> s;
+	Node *current = root;
+	while(current != NULL || !s.empty()) {
+		while (current != NULL) {
+			s.push(current);
+			current = current->left;
+		}
+		current = s.top();
+		s.pop();
+		cout << current->data << "\t";
+		current = current->right;
+	}
+}
+
+Node* Tree::searchInTreeIterative(Node *&tree, int x) {
+	while(tree != NULL && tree->data != x) {
+		if(x < tree->data) tree = tree->left;
+		else tree = tree->right;
+	}
+	return tree;
 }
