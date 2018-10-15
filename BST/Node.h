@@ -3,8 +3,9 @@
 
 class Node {
 	public:
-		Node* left;
-		Node* right;
+		Node *left;
+		Node *right;
+		Node *predecessor;
 		int data;
 		Node();
 		Node(int x);

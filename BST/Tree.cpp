@@ -14,16 +14,29 @@ Tree::Tree () {
 **/
 
 void Tree::insert (int x) {
-	insertInTreeIterative(root, x);
+	insertInTree(root, x);
 }
 
 void Tree::inorder () {
-	inorderTreeIterative(root);
+	inorderTree(root);
 	cout << "\n";
 }
 
-Node* Tree::search (int x) {
-	return searchInTreeIterative(root, x);
+Node *Tree::search (int x) {
+	return searchInTree(root, x);
+}
+
+Node *Tree::maximum () {
+	return maximumInTree(root);
+}
+
+Node *Tree::minimum () {
+	return minimumInTree(root);
+}
+
+Node *Tree::findSuccessor (Node *&node) {
+	cout << "Finding successor of " << node->data;
+	return node;
 }
 
 /**
@@ -56,4 +69,16 @@ Node* Tree::searchInTree(Node *&tree, int x) {
 		if(x < tree->data) return searchInTree(tree->left, x);
 		else return searchInTree(tree->right, x);
 	}
+}
+
+Node *Tree::maximumInTree(Node *&tree) {
+	if(tree->right != NULL)
+		return maximumInTree(tree->right);
+	return tree;
+}
+
+Node *Tree::minimumInTree(Node *&tree) {
+	if(tree->left != NULL)
+		return minimumInTree(tree->left);
+	return tree;
 }
