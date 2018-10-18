@@ -17,8 +17,9 @@ int main () {
 	tree.insert(3);
 	tree.insert(2);
 
-	Node *node = tree.search(4);
+	Node *node = tree.search(7);
 	Node *successor = tree.findSuccessor(node);
+	cout << successor->data << endl;
 	/**
 	Node* searchResult = tree.search(10);
 	if(searchResult == NULL) cout << "NOT FOUND";

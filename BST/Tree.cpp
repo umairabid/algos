@@ -35,8 +35,16 @@ Node *Tree::minimum () {
 }
 
 Node *Tree::findSuccessor (Node *&node) {
-	cout << "Finding successor of " << node->data;
-	return node;
+
+	if(node->right != NULL)
+		return minimumInTree(node->right);
+
+	Node *predecessor = node->predecessor;
+	while(predecessor != NULL && node == predecessor->right) {
+		node = predecessor;
+		predecessor = node->predecessor;
+	}
+	return predecessor;
 }
 
 /**
@@ -46,10 +54,10 @@ Node *Tree::findSuccessor (Node *&node) {
 void Tree::insertInTree(Node *&tree, int x) {
 	if(tree == NULL) tree = new Node(x);
 	else if(x < tree->data) {
-		if(tree->left == NULL) tree->left = new Node(x);
+		if(tree->left == NULL) tree->left = new Node(x, tree);
 		else insertInTree(tree->left, x);
 	} else {
-		if(tree->right == NULL) tree->right = new Node(x);
+		if(tree->right == NULL) tree->right = new Node(x, tree);
 		else insertInTree(tree->right, x);
 	}
 }

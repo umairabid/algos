@@ -9,6 +9,7 @@ class Node {
 		int data;
 		Node();
 		Node(int x);
+		Node(int x, Node *predecessor);
 };
 
 #endif

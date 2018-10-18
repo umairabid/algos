@@ -17,3 +17,10 @@ Node::Node (int x) {
 	predecessor = NULL;
 	data = x;
 }
+
+Node::Node (int x, Node *pre) {
+	left = NULL;
+	right = NULL;
+	predecessor = pre;
+	data = x;
+}
