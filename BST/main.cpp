@@ -17,22 +17,11 @@ int main () {
 	tree.insert(3);
 	tree.insert(2);
 
-	Node *node = tree.search(7);
-	Node *successor = tree.findSuccessor(node);
-	cout << successor->data << endl;
-	/**
-	Node* searchResult = tree.search(10);
-	if(searchResult == NULL) cout << "NOT FOUND";
-	else cout << searchResult->data;
-	**/
-
-	//tree.inorder();
-	/**
-	Node* max = tree.maximum();
-	if(max == NULL) cout << "NOT FOUND";
-	else cout << max->data;
-	**/
-
+	tree.inorder();
+	cout << endl;
+	Node *deletable = tree.search(5);
+	tree.remove(deletable);
+	tree.inorder();
 
 	return 0;
 }

@@ -13,29 +13,32 @@ Tree::Tree () {
 * Public Methods
 **/
 
-void Tree::insert (int x) {
-	insertInTree(root, x);
+void Tree::insert (int x) { insertInTree(root, x); }
+void Tree::inorder () { inorderTree(root); }
+
+void Tree::remove(Node *&node) {
+	if(node->left == NULL)
+		transplant(node, node->right);
+	else if(node->right == NULL)
+		transplant(node, node->left);
+	else {
+		Node *successor = minimumInTree(node->right);
+		if(node->right != successor) {
+			transplant(successor, successor->right);
+			successor->right = node->right;
+			successor->right->predecessor = successor;
+		}
+		transplant(node, successor);
+		successor->left = node->left;
+		successor->left->predecessor = successor;
+	}
 }
 
-void Tree::inorder () {
-	inorderTree(root);
-	cout << "\n";
-}
+Node *Tree::search(int x) { return searchInTree(root, x); }
+Node *Tree::maximum() { return maximumInTree(root); }
+Node *Tree::minimum() { return minimumInTree(root); }
 
-Node *Tree::search (int x) {
-	return searchInTree(root, x);
-}
-
-Node *Tree::maximum () {
-	return maximumInTree(root);
-}
-
-Node *Tree::minimum () {
-	return minimumInTree(root);
-}
-
-Node *Tree::findSuccessor (Node *&node) {
-
+Node *Tree::findSuccessor(Node *&node) {
 	if(node->right != NULL)
 		return minimumInTree(node->right);
 
@@ -50,6 +53,17 @@ Node *Tree::findSuccessor (Node *&node) {
 /**
 * Private Methods
 **/
+
+void Tree::transplant(Node *&old, Node *&newNode) {
+	if(old->predecessor == NULL)
+		root = newNode;
+	else if(old->predecessor->left == old)
+		old->predecessor->left = newNode;
+	else
+		old->predecessor->right = newNode;
+	if(newNode != NULL)
+		newNode->predecessor = old->predecessor;
+}
 
 void Tree::insertInTree(Node *&tree, int x) {
 	if(tree == NULL) tree = new Node(x);
