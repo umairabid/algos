@@ -15,6 +15,11 @@ Tree::Tree () {
 
 void Tree::insert (int x) { insertInTree(root, x); }
 void Tree::inorder () { inorderTree(root); }
+void Tree::preorder () { preorderTree(root); }
+void Tree::postorder () { postorderTree(root); }
+Node *Tree::search(int x) { return searchInTree(root, x); }
+Node *Tree::maximum() { return maximumInTree(root); }
+Node *Tree::minimum() { return minimumInTree(root); }
 
 void Tree::remove(Node *&node) {
 	if(node->left == NULL)
@@ -33,10 +38,6 @@ void Tree::remove(Node *&node) {
 		successor->left->predecessor = successor;
 	}
 }
-
-Node *Tree::search(int x) { return searchInTree(root, x); }
-Node *Tree::maximum() { return maximumInTree(root); }
-Node *Tree::minimum() { return minimumInTree(root); }
 
 Node *Tree::findSuccessor(Node *&node) {
 	if(node->right != NULL)
@@ -76,14 +77,6 @@ void Tree::insertInTree(Node *&tree, int x) {
 	}
 }
 
-void Tree::inorderTree(Node *&tree) {
-	if(tree != NULL) {
-		inorderTree(tree->left);
-		cout << tree->data << "\t";
-		inorderTree(tree->right);
-	}
-}
-
 Node* Tree::searchInTree(Node *&tree, int x) {
 	if(tree == NULL || tree->data == x) {
 		return tree;
@@ -93,14 +86,38 @@ Node* Tree::searchInTree(Node *&tree, int x) {
 	}
 }
 
-Node *Tree::maximumInTree(Node *&tree) {
+Node* Tree::maximumInTree(Node *&tree) {
 	if(tree->right != NULL)
 		return maximumInTree(tree->right);
 	return tree;
 }
 
-Node *Tree::minimumInTree(Node *&tree) {
+Node* Tree::minimumInTree(Node *&tree) {
 	if(tree->left != NULL)
 		return minimumInTree(tree->left);
 	return tree;
+}
+
+void Tree::inorderTree(Node *&node) {
+	if(node != NULL) {
+		inorderTree(node->left);
+		cout << node->data << "\t";
+		inorderTree(node->right);
+	}
+}
+
+void Tree::postorderTree(Node *node) {
+	if(node != NULL) {
+		postorderTree(node->left);
+		postorderTree(node->right);
+		cout << node->data << "\t";
+	}
+}
+
+void Tree::preorderTree(Node *node) {
+	if(node != NULL) {
+		cout << node->data << "\t";
+		inorderTree(node->left);
+		inorderTree(node->right);
+	}
 }

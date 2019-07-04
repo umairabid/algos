@@ -17,11 +17,8 @@ int main () {
 	tree.insert(3);
 	tree.insert(2);
 
-	tree.inorder();
+	tree.preorder();
 	cout << endl;
-	Node *deletable = tree.search(5);
-	tree.remove(deletable);
-	tree.inorder();
 
 	return 0;
 }
