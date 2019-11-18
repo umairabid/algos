@@ -170,7 +170,7 @@ void Tree::getNodesDistanceInTree(Node *&node, int distance, int level, map<int,
 		int nodeDistance = existing->first;
 		int nodeData = existing->second.first;
 		int nodeLevel = existing->second.second;
-		if(distance > nodeDistance)
+		if(level < nodeLevel)
 			distances[distance] = make_pair(node->data, level);
 	}
 	
