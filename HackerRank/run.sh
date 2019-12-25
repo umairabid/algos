@@ -8,7 +8,7 @@ fi
 
 if [ -f "$FILE" ]; then
     g++ -o output.out $FILE
-    ./output.out
+    /usr/bin/time -f "Execution time: %E" ./output.out
 else
 	echo "$filename does not exist"
 fi

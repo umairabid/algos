@@ -1,9 +1,13 @@
-#include <iostream>
+#include <cmath>
+#include <cstdio>
 #include <vector>
+#include <iostream>
+#include <algorithm>
 #include <unordered_map>
 #include <map>
 #include <queue>
-
+#include <fstream>
+#include <sstream>
 using namespace std;
 
 struct euler_path {
@@ -80,6 +84,25 @@ Node* generate_tree(vector<vector<long>> edges) {
             q.push(node->children[i]);
         }
     }
+
+    /*unordered_map<long, Node*> nodes;
+    
+    for(long i = 0; i < edges.size(); i++) {
+        vector<long> edge = edges[i];
+
+        if(nodes.find(edge[0]) == nodes.end()) {
+            nodes.insert(pair<long, Node*>{edge[0], new Node(edge[0], NULL)});
+        }
+        Node* parent = nodes.find(edge[0])->second;
+
+        if(nodes.find(edge[1]) == nodes.end()) {
+            nodes.insert(pair<long, Node*>{edge[1], new Node(edge[1], parent)});
+        }
+        Node* child = nodes.find(edge[1])->second;
+
+        if(i == 0) root = parent;
+        parent->children.push_back(child);
+    }*/
     return root;
 }
 
@@ -131,60 +154,91 @@ vector<vector<long>> get_sparse_table(vector<long> v, vector<long> log_table) {
     return sparse_table;
 }
 
+vector<long> explodeStringBySpace(string s) {
+    stringstream ssin(s);
+    vector<long> nodes;
+    string node;
+    while (ssin.good()){
+        ssin >> node;
+        nodes.push_back(stol(node));
+    }
+    return nodes;
+}
+
 int main() {
-	vector<vector<long>> edges;
-	edges.push_back(vector<long> {1, 2});
-	edges.push_back(vector<long> {1, 3});
-	edges.push_back(vector<long> {1, 4});
-	edges.push_back(vector<long> {3, 5});
-	edges.push_back(vector<long> {3, 6});
-	edges.push_back(vector<long> {3, 7});
-	Node* root = generate_tree(edges);
-	euler_path ep = get_euler_path(root);
-	for(long i = 0; i < ep.path.size(); i++) {
-		cout << ep.path[i] << " ";
-	}
-	cout << endl;
-	vector<long> log_table = get_log_table(ep.path);
-	vector<vector<long>> sparse_table = get_sparse_table(ep.path, log_table);
-	vector<vector<long>> sets = {
-		vector<long>{2, 4},
-		vector<long>{5},
-		vector<long>{2, 4, 5}
-	};
+    /* Enter your code here. Read input from STDIN. Print output to STDOUT */
+    long number_of_nodes;
+    long number_of_edges;
+    long number_of_sets;
+    long line_count = 0;
 
+    vector<vector<long>> sets;
+    vector<vector<long>> edges;
 
-	for(long i = 0; i < sets.size(); i++) {
+    ifstream infile("input07.txt");
+    string line;
+
+    while(getline(infile, line)) {
+        if(line_count == 0) {
+            vector<long> counts = explodeStringBySpace(line);
+            number_of_nodes = counts[0];
+            number_of_sets = counts[1];
+            number_of_edges = number_of_nodes - 1;
+        }
+
+        if(line_count > 0 && line_count <= number_of_edges) {
+            edges.push_back(explodeStringBySpace(line));
+        }
+
+        if(line_count > number_of_edges) {
+            if(line_count % 2 != 0) {
+                sets.push_back(explodeStringBySpace(line));
+            }
+        }
+
+        line_count++;
+    }
+   
+
+    /** Actual Solution Starts **/
+   
+    Node* root = generate_tree(edges);
+    euler_path ep = get_euler_path(root);
+    cout << endl;
+    vector<long> log_table = get_log_table(ep.path);
+    vector<vector<long>> sparse_table = get_sparse_table(ep.path, log_table);
+
+    for(long i = 0; i < sets.size(); i++) {
         if(sets[i].size() > 1) {
             long sum = 0;
-            vector<pair<long, long>> pairs;
             for(long j = 0; j < sets[i].size() ; j++) {
                 for(long k = j + 1; k < sets[i].size() ; k++) {
-                    pairs.push_back(pair<long, long>{sets[i][j], sets[i][k]});
+                    long n1 = sets[i][j];
+                    long n2 = sets[i][k];
+                    cout << "node 1: " << n1 << ", node 2: " << n2 << endl;
+                    long n1_index = ep.indexes.find(n1)->second;
+                    long n2_index = ep.indexes.find(n2)->second;
+                    long l = n1_index < n2_index ? n1_index : n2_index;
+                    long r = n1_index > n2_index ? n1_index : n2_index;
+                    long log = log_table[r - l];
+                    long lca = min(sparse_table[log][l], sparse_table[log][r - (1 << log)]);
+                    //cout << "lca of " << n1 << " with index " << n1_index << " and " << n2 << " with index " << n2_index << " is " << lca << endl;
+                    
+                    long level_of_lca = ep.levels.find(lca)->second;
+                    long level_of_n1 = ep.levels.find(n1)->second;
+                    long level_of_n2 = ep.levels.find(n2)->second;
+                    long dist = (level_of_n1 - level_of_lca) + (level_of_n2 - level_of_lca);
+                    sum = sum + ((n1 * n2) * dist);
                 }
-            }
-            for(long m = 0; m < pairs.size(); m++) {
-                long n1 = pairs[m].first;
-                long n2 = pairs[m].second;
-                long n1_index = ep.indexes.find(n1)->second;
-                long n2_index = ep.indexes.find(n2)->second;
-                long l = n1_index < n2_index ? n1_index : n2_index;
-                long r = n1_index > n2_index ? n1_index : n2_index;
-                long log = log_table[r - l];
-        		long lca = min(sparse_table[log][l], sparse_table[log][r - (1 << log)]);
-        		cout << "lca of " << n1 << " with index " << n1_index << " and " << n2 << " with index " << n2_index << " is " << lca << endl;
-                
-                long level_of_lca = ep.levels.find(lca)->second;
-                long level_of_n1 = ep.levels.find(n1)->second;
-                long level_of_n2 = ep.levels.find(n2)->second;
-                long dist = (level_of_n1 - level_of_lca) + (level_of_n2 - level_of_lca);
-                sum = sum + ((n1 * n2) * dist);
             }
             cout << sum % 1000000007 << endl;
         } else {
             cout << 0 << endl;
         }
     }
-	
-	return 0;
+
+
+    /** Actual Solution Ends **/
+
+    return 0;
 }
