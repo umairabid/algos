@@ -6,17 +6,19 @@ using namespace std;
 
 int main() {
 
-    vector<int> a = {2, 3, 5, 1, 3};
-    vector<bool> b;
-    b.resize(a.size());
-    int extra = 3;
-    int max = *max_element(a.begin(), a.end());
+    vector<int> nums = {1,1,2,2};
+    vector<int> pairs;
+    int n = 2;
 
-    transform(a.begin(), a.end(), b.begin(), [&](int x) { return (x + extra) >= max; });
-
-    for(auto r: b) {
-        cout << r;
+    for(int i = 0, j = n; i < n; i++, j++) {
+        cout << i << " : " << j << endl;
+        pairs.push_back(nums[i]);
+        pairs.push_back(nums[j]);
     }
 
+    for(int n : pairs) {
+        cout << n << " " << endl;
+    }
+    
     return 0;
 }
