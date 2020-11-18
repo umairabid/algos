@@ -4,7 +4,6 @@
 #include <sstream> 
 #include <algorithm>
 #include <functional>
-#include <unordered_map>
 #include "tree.h"
 
 using namespace std;
@@ -20,23 +19,14 @@ void Tree::addEdge(int p, int n) {
     nodes[n].push_back(p);
 }
 
-void Tree::traverse(int root) {
-    unordered_map<int, bool> visited;
-    function<void(int)> traverseNode = [&](int node) {
-        cout << node << " :\t";
-        visited[node] = true;
-        for(auto c : nodes[node]) {
+void Tree::traverse() {
+    for(int i = 0; i < nodes.size(); i++) {
+        cout << i << ":\t";
+        for(auto c: nodes[i]) {
             cout << c << "\t";
         }
-        for(auto c : nodes[node]) {
-            if(visited.find(c) == visited.end()) {
-                cout << "\n";
-                traverseNode(c);
-            }
-        }
-    };
-    traverseNode(root);
-    
+        cout << endl;
+    }
 }
 
 void Tree::fill(string filename) {
@@ -57,21 +47,32 @@ void Tree::fill(string filename) {
 
 vector<int> Tree::getHeights(int root) {
     vector<int> heights(nodes.size());
-    unordered_map<int, bool> visited;
-    function<int(int)> getNodeHeight = [&](int node){
-        visited[node] = true;
+    function<int(int, int)> getNodeHeight = [&](int node, int parent){
         vector<int> childrenHeights;
         for(int c : nodes[node]) {
-            if (visited.find(c) == visited.end())
-                childrenHeights.push_back(getNodeHeight(c));
+            if (c == parent) continue;
+            childrenHeights.push_back(getNodeHeight(c, node));
         }
-        int height = 1;
+        int height = 0;
         if (childrenHeights.size() > 0) {
             height = *max_element(childrenHeights.begin(), childrenHeights.end()) + 1;
         } 
         heights[node] = height;
         return height;
     };
-    getNodeHeight(root);
+    getNodeHeight(root, -1);
     return heights;
+}
+
+vector<int> Tree::dfs(int root) {
+    vector<int> nodesByDfs;
+    function<void(int, int)> dfsTree = [&](int node, int parent) {
+        nodesByDfs.push_back(node);
+        for(auto c : nodes[node]) {
+            if (c == parent) continue;
+            dfsTree(c, node);
+        }
+    };
+    dfsTree(root, -1);
+    return nodesByDfs;
 }

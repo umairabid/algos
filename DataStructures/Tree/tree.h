@@ -7,9 +7,10 @@
 struct Tree {
     std::vector<std::vector<int>> nodes;
     void addEdge(int, int);
-    void traverse(int);
+    void traverse();
     void fill(std::string);
     std::vector<int> getHeights(int);
+    std::vector<int> dfs(int);
 };
 
 #endif
