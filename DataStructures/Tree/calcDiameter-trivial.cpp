@@ -43,7 +43,7 @@ int main() {
 
     dfsTree(11, -1);
 
-    for_each(longestPaths.begin(), longestPaths.end(), [&](int x) { cout << x << " "; });
+    cout << *max_element(longestPaths.begin(), longestPaths.end());
 
     return 0;
 }

@@ -4,6 +4,7 @@
 #include <sstream> 
 #include <algorithm>
 #include <functional>
+#include <queue>
 #include "tree.h"
 
 using namespace std;
@@ -75,4 +76,55 @@ vector<int> Tree::dfs(int root) {
     };
     dfsTree(root, -1);
     return nodesByDfs;
+}
+
+vector<int> Tree::bfs(int root) {
+    vector<int> nodesByBfs;
+    queue<int> q;
+    vector<int> visited(nodes.size(), -1);
+    q.push(root);
+    while(!q.empty()) {
+        int node = q.front();
+        q.pop();
+        nodesByBfs.push_back(node);
+        visited[node] = true;
+        for(int c : nodes[node]) {
+            if (visited[c] != -1) continue;
+            q.push(c);
+        }
+    }
+    return nodesByBfs;
+}
+
+pair<int, int> Tree::findFarthest(int root) {
+    vector<int> distances(nodes.size(), -1);
+    queue<int> q;
+
+    int maxDistance = 0;
+    q.push(root);
+    distances[root] = 0;
+
+    while(!q.empty()) {
+        int node = q.front();
+        int distance = distances[node];
+        q.pop();
+
+        for(int c : nodes[node]) {
+            if (distances[c] != -1) continue;
+            distances[c] = distance + 1;
+            if (distances[c] > maxDistance)
+                maxDistance = distances[c];
+            q.push(c);
+        }
+    }
+
+    int farthestNode;
+    for(int i = 0; i < distances.size(); i++) {
+        if(distances[i] == maxDistance) {
+            farthestNode = i;
+            break;
+        }
+    }
+
+    return make_pair(farthestNode, maxDistance);
 }
