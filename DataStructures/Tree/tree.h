@@ -11,6 +11,8 @@ struct Tree {
     void fill(std::string);
     std::vector<int> getHeights(int);
     std::vector<int> dfs(int);
+    std::vector <int> bfs(int);
+    std::pair<int, int> findFarthest(int);
 };
 
 #endif
