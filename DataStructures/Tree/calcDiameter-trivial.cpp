@@ -7,7 +7,7 @@ using namespace std;
 
 int main() {
     Tree tree;
-    tree.fill("edges-2");
+    tree.fill("edges-1");
     vector<int> heights = tree.getHeights(11);
     vector<int> longestPaths;
     function<void(int, int)> dfsTree = [&](int node, int parent) {

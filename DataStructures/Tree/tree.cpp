@@ -5,25 +5,34 @@
 #include <algorithm>
 #include <functional>
 #include <queue>
+#include <unordered_map>
 #include "tree.h"
 
 using namespace std;
 
+Tree::Tree() { }
+
+Tree::Tree(const Tree &t) {
+    nodes = t.nodes;
+}
+
 void Tree::addEdge(int p, int n) {
-    if (p >= nodes.size()) {
-        nodes.resize(p+1);
+    if(nodes.find(p) == nodes.end()) {
+        nodes[p] = vector<int>();
     }
-    if (n >= nodes.size()) {
-        nodes.resize(n+1);
+
+    if(nodes.find(n) == nodes.end()) {
+        nodes[n] = vector<int>();
     }
+
     nodes[p].push_back(n);
     nodes[n].push_back(p);
 }
 
 void Tree::traverse() {
-    for(int i = 0; i < nodes.size(); i++) {
-        cout << i << ":\t";
-        for(auto c: nodes[i]) {
+    for(auto it = nodes.begin(); it != nodes.end(); it++) {
+        cout << it->first << ":\t";
+        for(auto c: it->second) {
             cout << c << "\t";
         }
         cout << endl;
@@ -31,7 +40,7 @@ void Tree::traverse() {
 }
 
 void Tree::fill(string filename) {
-    nodes = vector<vector<int>>{};
+    nodes = unordered_map<int, vector<int>>();
     ifstream stream(filename);
     string line;
 
@@ -44,6 +53,19 @@ void Tree::fill(string filename) {
         int b = stoi(numbers);
         addEdge(a, b);
     }
+}
+
+// should only be used for leaf nodes
+void Tree::removeNode(int node) {
+    for_each(nodes[node].begin(), nodes[node].end(), [&](int c) {
+        vector<int>::iterator it = find(nodes[c].begin(), nodes[c].end(), node);
+        nodes[c].erase(it); 
+    });
+    nodes.erase(node);
+}
+
+int Tree::size() {
+    return nodes.size();
 }
 
 vector<int> Tree::getHeights(int root) {
@@ -97,7 +119,7 @@ vector<int> Tree::bfs(int root) {
 }
 
 pair<int, int> Tree::findFarthest(int root) {
-    vector<int> distances(nodes.size(), -1);
+    unordered_map<int, int> distances;
     queue<int> q;
 
     int maxDistance = 0;
@@ -110,7 +132,7 @@ pair<int, int> Tree::findFarthest(int root) {
         q.pop();
 
         for(int c : nodes[node]) {
-            if (distances[c] != -1) continue;
+            if (distances.find(c) != distances.end()) continue;
             distances[c] = distance + 1;
             if (distances[c] > maxDistance)
                 maxDistance = distances[c];
@@ -127,4 +149,25 @@ pair<int, int> Tree::findFarthest(int root) {
     }
 
     return make_pair(farthestNode, maxDistance);
+}
+
+vector<int> Tree::getLeafNodes() {
+    vector<int> leafs;
+    for(auto it = nodes.begin(); it != nodes.end(); it++) {
+        if (it->second.size() <= 1) leafs.push_back(it->first);
+    }
+    return leafs;
+}
+
+vector<int> Tree::findCenters() {
+    vector<int> leafs = getLeafNodes();
+    if (leafs.size() == size())
+        return leafs;
+    else {
+        Tree clone = *this;
+        for (int l: leafs) {
+            clone.removeNode(l);
+        }
+        return clone.findCenters();
+    }
 }
