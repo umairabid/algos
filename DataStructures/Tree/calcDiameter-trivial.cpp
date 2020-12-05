@@ -1,6 +1,7 @@
 #include <iostream>
 #include <algorithm>
 #include <functional>
+#include <unordered_map>
 #include "tree.h"
 
 using namespace std;
@@ -8,7 +9,7 @@ using namespace std;
 int main() {
     Tree tree;
     tree.fill("edges-1");
-    vector<int> heights = tree.getHeights(11);
+    unordered_map<int, int> heights = tree.getHeights(11);
     vector<int> longestPaths;
     function<void(int, int)> dfsTree = [&](int node, int parent) {
 

@@ -6,6 +6,7 @@
 #include <functional>
 #include <queue>
 #include <unordered_map>
+#include <numeric>
 #include "tree.h"
 
 using namespace std;
@@ -68,8 +69,8 @@ int Tree::size() {
     return nodes.size();
 }
 
-vector<int> Tree::getHeights(int root) {
-    vector<int> heights(nodes.size());
+unordered_map<int, int> Tree::getHeights(int root) {
+    unordered_map<int, int> heights(nodes.size());
     function<int(int, int)> getNodeHeight = [&](int node, int parent){
         vector<int> childrenHeights;
         for(int c : nodes[node]) {
@@ -170,4 +171,45 @@ vector<int> Tree::findCenters() {
         }
         return clone.findCenters();
     }
+}
+
+unordered_map<int, int> Tree::getSizes(int root) {
+    unordered_map<int, int> sizes;
+
+    function<int(int, int)> calcSize = [&](int node, int parent) {
+        vector<int> children = nodes[node];
+        vector<int> childrenSizes;
+        for(int c: children) {
+            if (c != parent) {
+                childrenSizes.push_back(calcSize(c, node));
+            }
+        }
+        sizes[node] = accumulate(childrenSizes.begin(), childrenSizes.end(), 0) + 1;
+        return sizes[node];
+    };
+
+    calcSize(root, -1);
+    return sizes;
+}
+
+unordered_map<int, int> Tree::getMaxTrees(int root) {
+    unordered_map<int, int> sizes = getSizes(root);
+    unordered_map<int, int> maxTrees;
+
+    function<void(int, int)> calcMaxTree = [&](int node, int parent) {
+        vector<int> children = nodes[node];
+        vector<int> childrenSizes;
+        for(int c: children) {
+            if (c != parent) {
+                childrenSizes.push_back(sizes[c]);
+                calcMaxTree(c, node);
+            } else {
+                childrenSizes.push_back(nodes.size() - sizes[node]);
+            }
+        }
+        maxTrees[node] = *max_element(childrenSizes.begin(), childrenSizes.end());
+    };
+
+    calcMaxTree(root, -1);
+    return maxTrees;
 }
