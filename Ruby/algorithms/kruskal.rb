@@ -22,7 +22,7 @@ def kruskal(edges)
     union_find.add e.src
     union_find.add e.dest
   end
-  puts union_find.hash
+  
   edges.sort! {|a, b| a.weight <=> b.weight }
 
   i = 0
@@ -34,7 +34,7 @@ def kruskal(edges)
     i += 1
   end
 
-  puts mst.map { |e| e.to_hash}
+  mst.map { |e| e.to_hash}
 end
 
 edges = [
