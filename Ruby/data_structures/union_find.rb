@@ -1,13 +1,19 @@
 class UnionFind
+    attr_reader :hash
+
     def initialize
-        @hash = {1 => -2, 2 => 1, 3 => 2, 4 => -1}
+        @hash = {}
+    end
+
+    def count
+        @hash.count
     end
 
     def find(n)
         parent = @hash[n]
         return parent if parent.nil?
         return n if parent < 0
-        
+
         @hash[n] = find parent
         @hash[n]
     end
@@ -24,10 +30,10 @@ class UnionFind
 
     def union(x, y)
         return if connected?(x, y)
-
-        add x
-        add y
         
+        x = find x
+        y = find y
+
         weight_x = @hash[x].abs
         weight_y = @hash[y].abs
         
