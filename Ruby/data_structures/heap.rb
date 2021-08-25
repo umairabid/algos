@@ -1,8 +1,8 @@
 class Heap
-  def initialize(maximize = false)
+  def initialize(fn)
     @heap = []
     @size = 0
-    @maximize = maximize
+    @fn = fn
   end
 
   def build(arr)
@@ -61,7 +61,7 @@ class Heap
   def satisfies_heap?(this, that)
     return true if that.nil?
 
-    @maximize ? @heap[this] > @heap[that] : @heap[this] < @heap[that]
+    @fn.call(@heap[this], @heap[that])
   end
 
   def swap(this, that)
@@ -86,26 +86,16 @@ class Heap
   end
 end
 
-heap = Heap.new()
+heap = Heap.new( ->(x, y) { x[:weight] < y[:weight] })
+
 #heap.percolate_up(2)
 #puts heap.to_a
 
-heap.build [10,11,5,4,3]
-puts heap.to_a.join(' ')
-heap.add 8
-heap.add 7
-heap.add 6
-heap.add 1
-puts heap.to_a.join(' ')
-
-puts heap.pop
-puts heap.to_a.join(' ')
-
-puts heap.pop
-puts heap.to_a.join(' ')
-
-puts heap.pop
-puts heap.to_a.join(' ')
-
-puts heap.pop
-puts heap.to_a.join(' ')
+heap.build [
+  {v: 10, weight: 10},
+  {v: 11, weight: 11}, 
+  {v: 5, weight: 5}, 
+  {v: 3, weight: 3}, 
+  {v: 4, weight: 4}
+]
+puts heap.to_a
