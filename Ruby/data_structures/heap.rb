@@ -85,17 +85,3 @@ class Heap
     parent_i >= 0 ? parent_i : nil
   end
 end
-
-heap = Heap.new( ->(x, y) { x[:weight] < y[:weight] })
-
-#heap.percolate_up(2)
-#puts heap.to_a
-
-heap.build [
-  {v: 10, weight: 10},
-  {v: 11, weight: 11}, 
-  {v: 5, weight: 5}, 
-  {v: 3, weight: 3}, 
-  {v: 4, weight: 4}
-]
-puts heap.to_a
