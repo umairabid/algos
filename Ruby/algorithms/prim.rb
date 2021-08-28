@@ -2,18 +2,31 @@ require_relative '../data_structures/heap'
 
 def prim(list)
   mst = {}
-  cuts = Heap.new( ->(x, y) { x[:weight] < y[:weight] })
+  cuts = Heap.new(
+    comparator: ->(x, y) { x[:weight] < y[:weight] },
+    vertex_id: :node
+  )
 
   mst[0] = [];
-  list[0].each { |v| cuts.add({src: 0, dest: v[:node], weight: v[:weight]})}
+  list[0].each { |v| cuts.add({parent: 0, node: v[:node], weight: v[:weight]})}
 
   while(mst.count != list.count) do
-    edge = cuts.pop
-    next unless mst[edge[:dest]].nil?
+    cut = cuts.pop
 
-    mst[edge[:dest]] = [{node: edge[:src], weight: edge[:weight]}]
-    mst[edge[:src]].push({node: edge[:dest], weight: edge[:weight]})
-    list[edge[:dest]].each { |v| cuts.add({src: edge[:dest], dest: v[:node], weight: v[:weight]})}
+    mst[cut[:node]] = [{node: cut[:parent], weight: cut[:weight]}]
+    mst[cut[:parent]].push({node: cut[:node], weight: cut[:weight]})
+
+    list[cut[:node]].each do |v|
+      if mst[v[:node]].nil?
+        node = { parent: cut[:node], node: v[:node], weight: v[:weight] }
+        if cuts.vertex_index(node).nil?
+          cuts.add(node)
+        else
+          cuts.update_key(node, cuts.vertex_index(node))
+        end
+      end
+    end
+
   end
 
   mst
