@@ -1,24 +1,22 @@
 require_relative '../data_structures/heap'
 
-def prim(list)
-  mst = {}
+def dijkstra(list)
+  distance = {}
   cuts = Heap.new(
-    comparator: ->(x, y) { x[:weight] < y[:weight] },
+    comparator: ->(x, y) { x[:distance] < y[:distance] },
     vertex_id: :node
   )
 
-  mst[0] = [];
-  list[0].each { |v| cuts.add({parent: 0, node: v[:node], weight: v[:weight]})}
+  distance[0] = 0;
+  list[0].each { |v| cuts.add({node: v[:node], distance: v[:weight]})}
 
-  while(mst.count != list.count) do
+  while(distance.count != list.count) do
     cut = cuts.pop
-
-    mst[cut[:node]] = [{node: cut[:parent], weight: cut[:weight]}]
-    mst[cut[:parent]].push({node: cut[:node], weight: cut[:weight]})
+    distance[cut[:node]] = cut[:distance]
 
     list[cut[:node]].each do |v|
-      if mst[v[:node]].nil?
-        node = { parent: cut[:node], node: v[:node], weight: v[:weight] }
+      if distance[v[:node]].nil?
+        node = { node: v[:node], distance: v[:weight] + distance[cut[:node]] }
         if cuts.vertex_index(node).nil?
           cuts.add(node)
         else
@@ -29,7 +27,7 @@ def prim(list)
 
   end
 
-  mst
+  distance
 end
 
 list = {
@@ -44,4 +42,4 @@ list = {
   4 => [{node: 3, weight: 9}, {node: 5, weight: 10}]
 }
 
-puts prim(list)
+puts dijkstra(list)
