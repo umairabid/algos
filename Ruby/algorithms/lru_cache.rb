@@ -67,12 +67,3 @@ class LRUCache
   end
 end
 
-cache = LRUCache.new(2)
-
-cache.get(2)
-cache.put(2,6)
-cache.get(1)
-cache.put(1,5)
-cache.put(1,2)
-puts cache.get(1)
-puts cache.get(2)
